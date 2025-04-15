@@ -212,7 +212,7 @@ impl<C: openxr_data::Compositor> Input<C> {
 
         let legacy_hand_state = self.get_finger_state(session_data, hand);
 
-        let mut finger_curls = [0.0; 5];
+        let mut finger_curls = [0.0; 4];
         let finger_splay = [0.2; 5];
 
         for (i, curl_value) in finger_curls.iter_mut().enumerate() {
@@ -291,7 +291,7 @@ impl<C: openxr_data::Compositor> Input<C> {
 
         unsafe {
             summary_data.write(vr::VRSkeletalSummaryData_t {
-                flFingerSplay: [0.2; 5],
+                flFingerSplay: [0.2; 4],
                 flFingerCurl: [
                     legacy.thumb,
                     legacy.index,
