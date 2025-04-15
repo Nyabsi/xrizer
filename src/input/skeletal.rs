@@ -212,8 +212,8 @@ impl<C: openxr_data::Compositor> Input<C> {
 
         let legacy_hand_state = self.get_finger_state(session_data, hand);
 
-        let mut finger_curls = [0.0; 4];
-        let finger_splay = [0.2; 5];
+        let mut finger_curls = [0.0; 5];
+        let finger_splay = [0.2; 4];
 
         for (i, curl_value) in finger_curls.iter_mut().enumerate() {
             let (metacarpal, proximal, tip) = match i {
