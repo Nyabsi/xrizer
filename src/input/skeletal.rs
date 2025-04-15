@@ -262,14 +262,18 @@ impl<C: openxr_data::Compositor> Input<C> {
             };
 
             *curl_value = curl;
-            let splay_angle = if i == 0 { // Index
-                -0.05 + (((1.0 - curl) * 0.75) * 0.1)
-            } else if i == 3 { // Pinky
-                0.08 + (((1.0 - curl) * 0.75) * 0.12)
-            } else { // Middle and ring
-                ((1.0 - curl) * 0.75) * 0.07
-            };
-            finger_splay[i] = splay_angle;
+
+            // pinky no spley
+            if i != 4 {
+                let splay_angle = if i == 0 { // Index
+                    -0.05 + (((1.0 - curl) * 0.75) * 0.1)
+                } else if i == 3 { // Pinky
+                    0.08 + (((1.0 - curl) * 0.75) * 0.12)
+                } else { // Middle and ring
+                    ((1.0 - curl) * 0.75) * 0.07
+                };
+                finger_splay[i] = splay_angle;
+            }
         }
 
         unsafe {
