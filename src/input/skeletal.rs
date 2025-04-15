@@ -213,7 +213,7 @@ impl<C: openxr_data::Compositor> Input<C> {
         let legacy_hand_state = self.get_finger_state(session_data, hand);
 
         let mut finger_curls = [0.0; 5];
-        let finger_splay = [0.2; 4];
+        let finger_splay = [0.2; 5];
 
         for (i, curl_value) in finger_curls.iter_mut().enumerate() {
             let (metacarpal, proximal, tip) = match i {
@@ -261,9 +261,15 @@ impl<C: openxr_data::Compositor> Input<C> {
                 1.0 - (ang / PI)
             };
 
-            let skeletal_level = self.skeletal_tracking_level.read().unwrap();
-
             *curl_value = curl;
+            let splay_angle = if finger == 0 { // Index
+                -0.05f32 + (((1.0f - curl) * 0.75) * 0.1f32)
+            } else if finger == 3 { // Pinky
+                0.08f32 + (((1.0f - curl) * 0.75) * 0.12f32)
+            } else { // Middle and ring
+                ((1.0f - curl) * 0.75) * 0.07f32
+            };
+            finger_splay[i] = splay_angle;
         }
 
         unsafe {
@@ -285,7 +291,7 @@ impl<C: openxr_data::Compositor> Input<C> {
 
         unsafe {
             summary_data.write(vr::VRSkeletalSummaryData_t {
-                flFingerSplay: [0.2; 4],
+                flFingerSplay: [0.2; 5],
                 flFingerCurl: [
                     legacy.thumb,
                     legacy.index,
