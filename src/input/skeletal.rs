@@ -263,13 +263,7 @@ impl<C: openxr_data::Compositor> Input<C> {
 
             let skeletal_level = self.skeletal_tracking_level.read().unwrap();
 
-            // HACK: use estimated thumb on index to fix gestures
-            if i == 0 && *skeletal_level == vr::EVRSkeletalTrackingLevel::Partial {
-                *curl_value = legacy_hand_state.thumb;
-            } else {
-                *curl_value = curl;
-
-            }
+            *curl_value = curl;
         }
 
         unsafe {
