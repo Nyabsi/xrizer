@@ -103,6 +103,22 @@ impl<C: openxr_data::Compositor> Input<C> {
             0.0,
         ));
 
+        let thumb_joints = [
+            xr::HandJoint::THUMB_METACARPAL,
+            xr::HandJoint::THUMB_PROXIMAL,
+            xr::HandJoint::THUMB_DISTAL,
+            xr::HandJoint::THUMB_TIP,
+        ];
+
+        let thumb_correction = match hand {
+            Hand::Left => Quat::from_euler(glam::EulerRot::YZX, 0.0, -FRAC_PI_4, 0.0),
+            Hand::Right => Quat::from_euler(glam::EulerRot::YZX, 0.0, FRAC_PI_4, 0.0),
+        };
+        
+        for joint in thumb_joints {
+            joints[joint] *= Affine3A::from_quat(thumb_correction);
+        }
+
         // OpenXR reports all our bones in "model" space (basically), so we need to
         // convert everything into parent space.
         // For each finger, the metacarpal is a child of the wrist, and then each consecutive
@@ -260,16 +276,8 @@ impl<C: openxr_data::Compositor> Input<C> {
 
                 1.0 - (ang / PI)
             };
-
-            let skeletal_level = self.skeletal_tracking_level.read().unwrap();
-
-            // HACK: use estimated thumb on index to fix gestures
-            if i == 0 && *skeletal_level == vr::EVRSkeletalTrackingLevel::Partial {
-                *curl_value = legacy_hand_state.thumb;
-            } else {
-                *curl_value = curl;
-
-            }
+            
+            *curl_value = curl;
         }
 
         unsafe {
