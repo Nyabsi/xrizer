@@ -10,7 +10,7 @@ use openvr as vr;
 use openxr::{self as xr};
 use paste::paste;
 use std::cell::RefCell;
-use std::f32::consts::{FRAC_PI_2, PI};
+use std::f32::consts::{FRAC_PI_2, FRAC_PI_4, PI};
 use std::time::Instant;
 use HandSkeletonBone::*;
 
