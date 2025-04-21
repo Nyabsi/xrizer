@@ -95,6 +95,22 @@ impl<C: openxr_data::Compositor> Input<C> {
             0.0,
         ));
 
+        let thumb_joints = [
+            xr::HandJoint::THUMB_METACARPAL,
+            xr::HandJoint::THUMB_PROXIMAL,
+            xr::HandJoint::THUMB_DISTAL,
+            xr::HandJoint::THUMB_TIP,
+        ];
+    
+        let thumb_correction = match hand {
+            Hand::Left => Quat::from_euler(glam::EulerRot::YZX, 0.0, -FRAC_PI_4, 0.0),
+            Hand::Right => Quat::from_euler(glam::EulerRot::YZX, 0.0, FRAC_PI_4, 0.0),
+        };
+    
+        for joint in thumb_joints {
+            joints[joint] *= Affine3A::from_quat(thumb_correction);
+        }
+
         // OpenXR reports all our bones in "model" space (basically), so we need to
         // convert everything into parent space.
         // For each finger, the metacarpal is a child of the wrist, and then each consecutive
